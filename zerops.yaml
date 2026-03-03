@@ -82,7 +82,6 @@ zerops:
 
     run:
       base: dotnet@9
-      os: ubuntu
 
       # Migration still runs on deploy — database is ready when the
       # developer SSHs in. Compiles Migrate on the fly via 'dotnet
@@ -97,6 +96,9 @@ zerops:
       envVariables:
         ASPNETCORE_ENVIRONMENT: Development
         ASPNETCORE_URLS: http://0.0.0.0:8080
+        # HOME is required — .NET CLI and NuGet use it to locate
+        # package caches and temp dirs in the runtime container.
+        HOME: /home/zerops
         DB_NAME: db
         DB_HOST: ${db_hostname}
         DB_PORT: ${db_port}
