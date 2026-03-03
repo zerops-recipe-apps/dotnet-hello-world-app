@@ -6,10 +6,9 @@ zerops:
       base: dotnet@9
 
       buildCommands:
-        # Restore NuGet packages for both projects before publishing.
-        - dotnet restore App/App.csproj Migrate/Migrate.csproj
         # Publish framework-dependent artifacts (runtime provided by
         # the dotnet@9 container image — no bundled runtime needed).
+        # dotnet publish implicitly restores NuGet packages first.
         - dotnet publish App/App.csproj -c Release -o out/app
         - dotnet publish Migrate/Migrate.csproj -c Release -o out/migrate
 
@@ -72,7 +71,8 @@ zerops:
         # container (cached via cache: true for subsequent builds).
         # The developer will need to run 'dotnet restore' after SSH —
         # NuGet cache lives in the build container, not the runtime.
-        - dotnet restore App/App.csproj Migrate/Migrate.csproj
+        - dotnet restore App/App.csproj
+        - dotnet restore Migrate/Migrate.csproj
 
       # Deploy the entire working directory — source code, project
       # files, and zerops.yaml (so 'zcli push' works from SSH).
